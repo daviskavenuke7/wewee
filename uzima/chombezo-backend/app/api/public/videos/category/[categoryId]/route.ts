@@ -24,10 +24,12 @@ export async function GET(
       throw new ValidationError('Invalid pagination parameters', validation.errors);
     }
 
-    const offset = (validation.data.page - 1) * validation.data.limit;
+    const validatedPage = validation.data.page ?? 1;
+    const validatedLimit = validation.data.limit ?? 20;
+    const offset = (validatedPage - 1) * validatedLimit;
     const { videos, total } = await getVideosByCategory(
       categoryId,
-      validation.data.limit,
+      validatedLimit,
       offset
     );
 
@@ -37,10 +39,10 @@ export async function GET(
         data: {
           videos,
           pagination: {
-            page: validation.data.page,
-            limit: validation.data.limit,
+            page: validatedPage,
+            limit: validatedLimit,
             total,
-            totalPages: Math.ceil(total / validation.data.limit),
+            totalPages: Math.ceil(total / validatedLimit),
           },
         },
       },

@@ -19,8 +19,10 @@ export async function GET(request: NextRequest) {
       throw new ValidationError('Invalid pagination parameters', validation.errors);
     }
 
-    const offset = (validation.data.page - 1) * validation.data.limit;
-    const { categories, total } = await getCategoriesAdmin(validation.data.limit, offset);
+    const validatedPage = validation.data.page ?? 1;
+    const validatedLimit = validation.data.limit ?? 20;
+    const offset = (validatedPage - 1) * validatedLimit;
+    const { categories, total } = await getCategoriesAdmin(validatedLimit, offset);
 
     return NextResponse.json(
       {
@@ -28,10 +30,10 @@ export async function GET(request: NextRequest) {
         data: {
           categories,
           pagination: {
-            page: validation.data.page,
-            limit: validation.data.limit,
+            page: validatedPage,
+            limit: validatedLimit,
             total,
-            totalPages: Math.ceil(total / validation.data.limit),
+            totalPages: Math.ceil(total / validatedLimit),
           },
         },
       },

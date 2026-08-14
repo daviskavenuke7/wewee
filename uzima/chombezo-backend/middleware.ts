@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
     'http://127.0.0.1:3000',
   ];
 
-  const isAllowedOrigin = allowedOrigins.includes(origin || '');
+  const isAllowedOrigin = !!origin && allowedOrigins.includes(origin);
   const corsOrigin = isAllowedOrigin ? origin : 'http://localhost:8080';
 
   // Handle preflight requests
@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
     return new NextResponse(null, {
       status: 200,
       headers: {
-        'Access-Control-Allow-Origin': corsOrigin,
+        'Access-Control-Allow-Origin': corsOrigin || 'http://localhost:8080',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'Access-Control-Allow-Credentials': 'true',

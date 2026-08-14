@@ -79,6 +79,17 @@ export async function getCategoriesAdmin(limit = 20, offset = 0) {
   return { categories: data || [], total: count || 0 };
 }
 
+export async function getCategoryById(id: string) {
+  const { data, error } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
 export async function getCategoryBySlug(slug: string) {
   const { data, error } = await supabase
     .from('categories')
@@ -181,16 +192,17 @@ export async function getVideoById(id: string) {
   return data;
 }
 
-export async function getVideosByCategory(slug: string) {
-  const { data, error } = await supabase
+export async function getVideosByCategory(slug: string, limit = 20, offset = 0) {
+  const { data, error, count } = await supabase
     .from('videos')
-    .select('id, title, description, category_id, thumbnail_url, video_url, is_active, sort_order, created_at, categories(id, name, slug, is_premium)')
+    .select('id, title, description, category_id, thumbnail_url, video_url, is_active, sort_order, created_at, categories(id, name, slug, is_premium)', { count: 'exact' })
     .eq('categories.slug', slug)
     .eq('is_active', true)
-    .order('sort_order', { ascending: true });
+    .order('sort_order', { ascending: true })
+    .range(offset, offset + limit - 1);
 
   if (error) throw new Error(`Failed to fetch videos: ${error.message}`);
-  return data;
+  return { videos: data || [], total: count || 0 };
 }
 
 export async function createVideo(input: {

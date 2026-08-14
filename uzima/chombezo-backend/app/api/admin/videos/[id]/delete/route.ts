@@ -25,11 +25,7 @@ export async function DELETE(
     }
 
     // Delete video
-    const success = await deleteVideo(id);
-
-    if (!success) {
-      throw new Error('Failed to delete video');
-    }
+    await deleteVideo(id);
 
     return NextResponse.json(
       {

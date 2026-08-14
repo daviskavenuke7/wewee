@@ -11,16 +11,10 @@ export async function GET(request: NextRequest) {
 
     const settings = await getAllSettings();
 
-    // Convert array to key-value object
-    const settingsMap: Record<string, any> = {};
-    settings.forEach((setting) => {
-      settingsMap[setting.key] = setting.value;
-    });
-
     return NextResponse.json(
       {
         success: true,
-        data: { settings: settingsMap },
+        data: { settings },
       },
       { status: HTTP_STATUS.OK }
     );

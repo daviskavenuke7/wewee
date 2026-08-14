@@ -23,11 +23,10 @@ export async function POST(request: NextRequest) {
       category_id: validation.data.category_id,
       title: validation.data.title,
       description: validation.data.description || null,
-      thumbnail_url: validation.data.thumbnail_url || null,
+      thumbnail_url: validation.data.thumbnail_url ?? '',
       video_url: validation.data.video_url,
-      duration_seconds: validation.data.duration_seconds || null,
-      is_premium: validation.data.is_premium,
-      sort_order: validation.data.sort_order,
+      is_active: true,
+      sort_order: validation.data.sort_order ?? 0,
     });
 
     return NextResponse.json(
